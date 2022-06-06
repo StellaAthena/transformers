@@ -29,6 +29,7 @@ from ...file_utils import (
 from ...modeling_outputs import BaseModelOutputWithPast, CausalLMOutputWithPast
 from ...modeling_utils import PreTrainedModel
 from ...utils import logging
+from ...utils.model_parallel_utils import assert_device_map, get_device_map
 from .configuration_gpt_neox import GPTNeoXConfig
 
 
