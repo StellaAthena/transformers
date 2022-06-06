@@ -559,6 +559,24 @@ class GPTNeoXForCausalLM(GPTNeoXPreTrainedModel):
 
         # Initialize weights and apply final processing
         self.post_init()
+        
+    def parallelize(self, device_map=None):
+        self.device_map = (
+            get_device_map(len(self.transformer.h), range(torch.cuda.device_count()))
+            if device_map is None
+            else device_map
+        )
+        assert_device_map(self.device_map, len(self.transformer.h))
+        self.transformer.parallelize(self.device_map)
+        self.lm_head = self.lm_head.to(self.transformer.first_device)
+        self.model_parallel = True
+
+    def deparallelize(self):
+        self.transformer.deparallelize()
+        self.transformer = self.transformer.to("cpu")
+        self.lm_head = self.lm_head.to("cpu")
+        self.model_parallel = False
+        torch.cuda.empty_cache()
 
     def get_output_embeddings(self):
         return self.embed_out
