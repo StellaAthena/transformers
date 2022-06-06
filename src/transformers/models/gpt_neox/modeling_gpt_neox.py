@@ -53,6 +53,7 @@ class GPTNeoXPreTrainedModel(PreTrainedModel):
 
     config_class = GPTNeoXConfig
     base_model_prefix = "gpt_neox"
+    is_parallelizable = True
     supports_gradient_checkpointing = True
     _no_split_modules = ["GPTNeoXLayer"]
     
